@@ -1,0 +1,39 @@
+8080 = snamazon
+	/cart_add?id=2
+	/car_remove?id=2.0&boolRemoveAll=false
+
+8081 = users api
+	/user
+	/allUsers
+	/login?mail=x&password=x
+
+8082 = products api
+	/getProducts
+	/getProduct?id=1
+
+8083 = tva api
+	/getTvaByCategory?id=1
+	/getTvaByPoduct?id=1
+
+8084 = stock api
+	/getStockByProduct?id=1
+
+8085 = cart api
+	/addItem
+	/removeItem
+
+8086 = forfait livraisons api
+	/getShippingRates
+	/getShippingRate
+
+8087 = order api
+
+8088 = checkout api
+
+8761 = eureka_server
+8762 = zuul_server
+
+
+8100 = Ikea
+8101 = Vandenborre
+8102 = Decathlon

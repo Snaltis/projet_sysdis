@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Please sign in</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+
+<section id ="banner">
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-3">Snamazon</h1>
+            <p class="lead">Login</p>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div id="buttonbar" class="container-fluid">
+                    <form class="float-left col-1" method="GET" action="index">
+                        <button type ="submit" class="btn btn-primary btn-md"><i class='fa fa-home'></i> Accueil </button>
+                    </form>
+                    <form class="float-left col-1" method="GET" action="Cart">
+                        <button type="hidden" class="btn btn-primary btn-md offset-4"><i class='fas fa-shopping-cart'></i> Panier</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<div class="container">
+
+    <form class="form-signin" method="POST" action="index" >
+        <h4>Connexion</h4>
+
+        <th:block th:utext="${error}"></th:block>
+
+        <input type="email" name="user_mail" class="form-control" placeholder="Numero de client" required=""/>
+        <input type="password" name="password" class="form-control" placeholder="Mot de passe" required=""/>
+        <span class="group-btn">
+            <button type ="submit" class="btn btn-primary btn-md" name="action" value="requestLogin">Se connecter</button>
+        </span>
+    </form>
+</div>
+</body></html>
