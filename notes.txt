@@ -1,0 +1,11 @@
+cart et order pas centralisé sinon on peut ajouter des produits au carts des autres
+
+allumer ActiveMQ : 
+
+Browse to the /activemq/bin directory.
+Run the activemq.bat file.
+
+
+Kill service : 
+netstat -ano -p tcp |find "80xx"
+taskkill /F /PID xxxxx
