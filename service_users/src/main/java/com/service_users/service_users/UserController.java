@@ -3,14 +3,17 @@ package com.service_users.service_users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.websocket.server.PathParam;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class UserController {
@@ -19,16 +22,11 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
-    @GetMapping("/allUsers")
-    public List<userModel> index(){
-        return userRepository.findAll();
-    }
-
-    @GetMapping("/user")
-    public userModel show(@PathParam("id") String id){
-        if (id == null) return null;
-        Integer userId = Integer.parseInt(id);
-        return userRepository.findById(userId).get();
+    @PostMapping("/user")
+    public userModel getUser(@RequestBody String json){
+        Map<String, Object> request = gsonToArray(json).get(0);
+        if (request.get("userId") == null) return null;
+        return userRepository.findUser((String)request.get("userId"), (String)request.get("password"));
     }
 
     @PostMapping("/login")
@@ -49,6 +47,19 @@ public class UserController {
         }
 
         return "WRONG_PWD";
+    }
+
+
+    public ArrayList<Map<String, Object>> gsonToArray(String gson)
+    {
+        System.err.println(gson);
+        if(gson.startsWith("["))
+            gson = "{\"_table\":" + gson + ",\"_content\":[]}";
+        else
+            gson = "{\"_table\":[" + gson + "],\"_content\":[]}";
+
+        ArrayList<Map<String, Object>> dataTable = Tables.Deseriliaze(gson).getTable();
+        return dataTable;
     }
 
 }

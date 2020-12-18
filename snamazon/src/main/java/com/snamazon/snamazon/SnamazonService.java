@@ -1,12 +1,25 @@
 package com.snamazon.snamazon;
 
 import org.springframework.beans.factory.annotation.Value;
+
+import java.lang.IllegalStateException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.apache.activemq.broker.BrokerFactory;
+import org.apache.activemq.broker.BrokerService;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.listener.SimpleMessageListenerContainer;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import wiremock.net.minidev.json.JSONObject;
 
+import javax.jms.*;
+import javax.jms.Queue;
+import javax.jms.Session;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.Application;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -19,6 +32,10 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.text.DecimalFormat;
+import javax.jms.ConnectionFactory;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
+
 
 @RestController
 public class SnamazonService {
@@ -29,7 +46,6 @@ public class SnamazonService {
 
     @GetMapping(value={"", "/", "index"})
     public ModelAndView index(HttpSession session){
-
 
         System.err.println(zuulPath);
 
@@ -70,7 +86,11 @@ public class SnamazonService {
 
         mav = getLoginButton(session, "profile");
 
-        Map<String, Object> user = getRequestToArray(zuulPath + "user-service" + "/user?id=" + session.getAttribute("user_id")).get(0);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("userId", session.getAttribute("user_id"));
+        jsonObject.put("password", session.getAttribute("password"));
+        String jsonString = jsonObject.toString();
+        Map<String, Object> user = postRequestToArray(zuulPath + "user-service" + "/user", jsonString).get(0);
         mav.addObject("num_client", user.get("num_client"));
         mav.addObject("nom", user.get("nom"));
         mav.addObject("prenom", user.get("prenom"));
@@ -198,7 +218,12 @@ public class SnamazonService {
             jsonObject.put("numProduit", String.valueOf((int)(Double.parseDouble(id))));
             jsonObject.put("removeAll", boolRemoveAll);
             String jsonString = jsonObject.toString();
-            postRequest(zuulPath + "cart-service" + "/removeItem", jsonString);
+
+            //UTILISATION DE JMS
+            SnamazonApplication.sendJmsMessage("toRemoveCart", jsonString);
+
+            //postRequest(zuulPath + "cart-service" + "/removeItem", jsonString);
+
             getHtmlCart(session);
             String cart = getHtmlCart(session);
             mav.addObject("products", cart);
@@ -621,4 +646,6 @@ public class SnamazonService {
 
         return html;
     }
+
+
 }
